@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django migrations
+*/migrations/
+!*/migrations/__init__.py
+
+# SQLite database
+*.sqlite3
+
+# PostgreSQL dump files
+*.dump
+
+# Environment variables
+.env
+.env.*
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.pipenv/
+
+# Pytest and coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# pyright
+typings/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*~
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Static/media files (optional, depending on setup)
+staticfiles/
+media/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+MANIFEST
+
+# pip-tools
+*.txt~  # temp files from editors
+
+# Celery beat schedule file
+celerybeat-schedule
+
+# Docker
+*.pid
+
+# Node modules (if using frontend tools)
+node_modules/
