@@ -4,7 +4,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework import status #This imports HTTP status codes 
 from rest_framework_simplejwt.tokens import RefreshToken # allows you to manually generate access and refresh tokens for a user — typically used after login or account creation.
-from core.auth.serializers.register import RegisterSerializer
+from core.auth.serializers import RegisterSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
