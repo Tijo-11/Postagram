@@ -1,6 +1,6 @@
 from rest_framework import routers # Routers allow you to quickly declare all of the common routes for a given controller
 from core.user.viewsets import UserViewSet
-from core.auth.viewsets import RegisterViewSet, LoginViewSet
+from core.auth.viewsets import RegisterViewSet, LoginViewSet, RefreshViewSet
 
 
 
@@ -15,6 +15,7 @@ router.register(r'user', UserViewSet, basename='user')
 ############Auth#################
 router.register(r'auth/register', RegisterViewSet, basename='auth-register')
 router.register(r'auth/login', LoginViewSet, basename= 'auth-login')
+router.register(r'auth/refresh', RefreshViewSet, basename='auth-refresh')
 
 
 """In Django REST Framework (DRF), a router automatically generates URL patterns for viewsets, saving you from 

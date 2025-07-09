@@ -20,7 +20,7 @@ class LoginSerializer(TokenObtainPairSerializer): # defines a custom login seria
         if api_settings.UPDATE_LAST_LOGIN: #UPDATE_LAST_LOGIN is a constant defined in Simple JWT’s default settings. It follows the convention of using all uppercase for config settings (like DEBUG, TOKEN_LIFETIME, etc.). This line checks if the setting is enabled, and if so, updates the user's last_login timestamp.
             update_last_login(None, self.user)
             
-        return data
+        return data #be wary of indentation, don't keep return inside if
         
         #You inherit from AbstractBaseUser, and this built-in Django class already includes the last_login field
             
