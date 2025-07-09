@@ -1,5 +1,7 @@
 from rest_framework import routers # Routers allow you to quickly declare all of the common routes for a given controller
 from core.user.viewsets import UserViewSet
+from core.auth.viewsets.register_views import RegisterViewSet
+
 
 router = routers.SimpleRouter() #Creates a simple DRF router that automatically maps URLs to your viewsets — handling routes like list, retrieve, etc., without needing to define them manually.        
 
@@ -23,4 +25,5 @@ The basename argument is optional but it’s a good practice to use one, as it h
 also helps Django for URL registry purposes.
 """
 
-############
+############Auth#################
+router.register(r'auth/register', RegisterViewSet, basename='auth-register')
