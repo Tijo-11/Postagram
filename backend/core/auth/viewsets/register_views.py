@@ -5,12 +5,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status #This imports HTTP status codes 
 from rest_framework_simplejwt.tokens import RefreshToken # allows you to manually generate access and refresh tokens for a user — typically used after login or account creation.
 from core.auth.serializers.register import RegisterSerializer
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
 class RegisterViewSet(ViewSet):
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
     http_method_names = ['post']
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     
     def create(self, request, *args, **kwargs):
         # *args: Collects positional arguments as a tuple., **kwargs: Collects keyword arguments as a dictionary

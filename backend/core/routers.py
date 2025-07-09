@@ -8,9 +8,13 @@ router = routers.SimpleRouter() #Creates a simple DRF router that automatically 
 ##############USER #############
 router.register(r'user', UserViewSet, basename='user')
 
-urlpatterns = [
-    *router.urls
-] 
+
+
+
+############Auth#################
+router.register(r'auth/register', RegisterViewSet, basename='auth-register')
+
+
 """In Django REST Framework (DRF), a router automatically generates URL patterns for viewsets, saving you from 
 writing them manually. SimpleRouter is a basic router that maps standard HTTP methods (GET, POST, PATCH, DELETE, etc.) 
 to the appropriate viewset actions like list(), retrieve(), create(), and so on.
@@ -24,6 +28,6 @@ The viewset: Only representing a valid viewset class.
 The basename argument is optional but it’s a good practice to use one, as it helps for readability and 
 also helps Django for URL registry purposes.
 """
-
-############Auth#################
-router.register(r'auth/register', RegisterViewSet, basename='auth-register')
+urlpatterns = [
+    *router.urls
+] # this should be at end
