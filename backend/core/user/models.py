@@ -4,8 +4,9 @@ from django.db import models #This line imports Django's models module, which pr
 from django.contrib.auth.models  import AbstractBaseUser, BaseUserManager, PermissionsMixin #This line imports essential Django classes used to create a custom user model, AbstractBaseUser: Provides core user authentication features (like password)., BaseUserManager: Helps manage user creation (e.g., create_user, create_superuser), PermissionsMixin: Adds permission handling (like groups and is_superuser).
 from django.core.exceptions import ObjectDoesNotExist  #an exception raised when a database query fails to find a matching object (e.g., Model.objects.get() with no result).
 from django.http import Http404 # from the http module inside the Django package. 
+from core.abstract.models import AbstractModel, AbstractManager
 
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager, AbstractManager):
     def get_object_by_public_id(self, public_id):#This method tries to find and return an object with the given public_id; if found, it returns the matching instance.
         try:
             instance = self.get(public_id = public_id)
@@ -44,8 +45,7 @@ class UserManager(BaseUserManager):
         
         return user   
 
-class User(AbstractBaseUser, PermissionsMixin):
-    public_id = models.UUIDField(db_index=True, unique=True, default=uuid.uuid4, editable=False) #uuid is Python's built-in module for generating universally unique identifiers (UUIDs). uuid.uuid4() creates a random UUID (version 4
+class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
     username = models.CharField(db_index= True, max_length=255, unique=True) #A database index is like a lookup table that speeds up searches, filtering, and joins involving that field.
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -55,10 +55,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True)
-    
-    
-    created = models.DateTimeField(auto_now=True)
-    updated = models.DateTimeField(auto_now=True)
     
     USERNAME_FIELD = 'email' #Tells Django to use email as the unique identifier for login instead of the default username. Only the email will be used for login — not the username.
     REQUIRED_FIELDS = ['username'] #Tells Django that username must be provided when creating a superuser via createsuperuser.
