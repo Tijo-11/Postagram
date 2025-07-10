@@ -30,7 +30,17 @@ class PostSerializer(AbstractSerializer):
         rep["author"] = UserSerializer(author).data #replaces the author field in rep with this serialized user info (e.g., name, email, etc.) and serializes into JSON
         
         return rep
+    
         
-"""The validate_author method checks validation for the author field. Here, we want to make 
-sure that the user creating the post is the same user as in the author field. A context dictionary is 
-available in every serializer. It usually contains the request object that we can use to make some checks."""
+# The validate_author method checks validation for the author field. Here, we want to make 
+# sure that the user creating the post is the same user as in the author field. A context dictionary is 
+# available in every serializer. It usually contains the request object that we can use to make some checks.
+
+    def update(self, instance, validated_data):   #This update method overrides the default to automatically mark a post as edited the first time it's updated. If instance.edited is False, it sets 'edited': True in the validated_data. Then it calls the parent class’s update() method with the modified data and returns the updated instance.
+        if not instance.edited:
+            validated_data['edited']= True
+        instance = super().update(instance, validated_data)
+        return instance
+        
+
+        

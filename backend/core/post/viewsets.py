@@ -5,12 +5,16 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from core.abstract.viewsets import AbstractViewSet
 from core.post.models import Post
 from core.post.serializers import PostSerializer
+from core.auth.permissions import UserPermission
+
+#methods for deletion (destroy()), and updating  (update()) are already available by default in the ViewSet class
 
 class PostViewSet(AbstractViewSet):
-    http_method_names = ('post', 'get')
-    permission_classes = (IsAuthenticated,)
+    http_method_names = ('post', 'get', 'put', 'delete', 'patch')
+    permission_classes = (UserPermission,)
     serializer_class = PostSerializer
-    authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication] #Your viewset uses permission_classes = (IsAuthenticated,), which requires a valid authenticated user. If authentication fails (due to the wrong authentication classes), DRF returns the "Authentication credentials were not provided." error.
+    #you’re likely using a token-based authentication system like rest_framework_simplejwt or DRF’s TokenAuthentication. These require JWTAuthentication or TokenAuthentication in your authentication_classes, not SessionAuthentication or BasicAuthentication.
 
     def get_queryset(self):
         return Post.objects.all() #Django ORM (Object-Relational Mapper) query that retrieves all rows from the Post table as Python objects.
