@@ -1,11 +1,10 @@
 { "password": "12345678",
  "email": "mouse@yopmail.com" }
 
-
  {
-	"refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc1MjIwNzExMSwiaWF0IjoxNzUyMTIwNzExLCJqdGkiOiI1MTdiY2E3ODkyOGM0MThmYjhhYzM3MmUxMzM3NThmNyIsInVzZXJfaWQiOjJ9.yMInYjVBNtiQHKU4GIvgUwc-N9SB_5BppW7eikQTW6c",
-	"access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzUyMTIxMDExLCJpYXQiOjE3NTIxMjA3MTEsImp0aSI6ImM3ZTRhZDE3ZWY5MzQ5YjA4OWY5MGMyMTEzNTc3MDZjIiwidXNlcl9pZCI6Mn0.uUO7thJ7DWQHhVQhzoLnFHsNwuSQRmfyMuZ7aF_O9JA",
+	"author":"905d2099ea9d46de94b81baab81a3a54",
+	"body" :"Mickey mouse is very very good mouse"
+}
 
- }
 
- 
+

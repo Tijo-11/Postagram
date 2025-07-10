@@ -14,6 +14,12 @@ class PostSerializer(AbstractSerializer):
 #  SlugRelatedField  is used to represent the target of the relationship 
 # using a field on the target. Thus, when creating a post, public_id of the author will be passed in 
 # the body of the request so that the user can be identified and linked to the post.
+
+    liked = serializers.SerializerMethodField() #Declares a read-only field in the serializer whose value is computed 
+                                                #by a method named 'get_<field_name>' in the same serializer class.
+    likes_count = serializers.SerializerMethodField()
+    
+    
     def validate_author(self, value):
         if self.context['request'].user != value:
             raise ValidationError("You can't create a post for another user") #context is a dictionary provided by the serializer that includes extra info — like the current request — passed by the view. value is the user instance passed as the author field during validation. So the method checks: “Is the logged-in user (request.user) the same as the author provided in the data?”
@@ -41,6 +47,27 @@ class PostSerializer(AbstractSerializer):
             validated_data['edited']= True
         instance = super().update(instance, validated_data)
         return instance
+    
+    def get_liked(self, instance): #Custom method used by SerializerMethodField for liked field, 'instance' is the current object being serialized.
+        request = self.context.get('request', None) ## Retrieves the current HTTP request object from the serializer context; returns None if not available.
         
+        if request is None or request.user.is_anonymous:#request.user is set by Django's authentication system. .is_anonymous is a property of the user object.
+            return False
+        
+        return request.user.has_liked(instance) #Calls a custom method to check if the current user has liked the given instance (e.g., a post or comment).
+        
+    def get_likes_count(self, instance): #'instance' is the current object being serialized.
+        return instance.liked_by.count() #Returns the total number of users who have liked this instance by counting entries in the 'liked_by' related field
+                                            #liked_by is the related field
+    
+    class Meta: #Inner class used to configure metadata for the parent class (e.g., a serializer or model); defines options like model, fields, ordering, etc.
+        model = Post
+        fields = ['id', 'author', 'body', 'edited', 'liked', 'likes_count', 'created', 'updated']
+        read_only_fields = ['edited']
+        
+
+#for liked, we have the get_liked method, and for likes_count, we have the 
+#get_likes_count method.
+
 
         

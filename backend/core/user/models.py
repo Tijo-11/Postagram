@@ -1,15 +1,22 @@
 import uuid
 
-from django.db import models #This line imports Django's models module, which provides classes and tools to define and interact with database tables using Django's Object-Relational Mapping (ORM).
-from django.contrib.auth.models  import AbstractBaseUser, BaseUserManager, PermissionsMixin #This line imports essential Django classes used to create a custom user model, AbstractBaseUser: Provides core user authentication features (like password)., BaseUserManager: Helps manage user creation (e.g., create_user, create_superuser), PermissionsMixin: Adds permission handling (like groups and is_superuser).
-from django.core.exceptions import ObjectDoesNotExist  #an exception raised when a database query fails to find a matching object (e.g., Model.objects.get() with no result).
+from django.db import models #This line imports Django's models module, which provides classes and tools to 
+                    #define and interact with database tables using Django's Object-Relational Mapping (ORM).
+from django.contrib.auth.models  import AbstractBaseUser, BaseUserManager, PermissionsMixin #This line imports 
+                    #essential Django classes used to create a custom user model, AbstractBaseUser: Provides core 
+                    # user authentication features (like password)., BaseUserManager: Helps manage user creation 
+                    # (e.g., create_user, create_superuser), PermissionsMixin: Adds permission handling (like groups
+                    # and is_superuser).
+from django.core.exceptions import ObjectDoesNotExist  #an exception raised when a database query fails to find a 
+                                                    #matching object (e.g., Model.objects.get() with no result).
 from django.http import Http404 # from the http module inside the Django package. 
 from core.abstract.models import AbstractModel, AbstractManager
 
 class UserManager(BaseUserManager, AbstractManager):
-    def get_object_by_public_id(self, public_id):#This method tries to find and return an object with the given public_id; if found, it returns the matching instance.
+    def get_object_by_public_id(self, public_id):#This method tries to find and return an object with the given 
+                                                    #public_id; if found, it returns the matching instance.
         try:
-            instance = self.get(public_id = public_id)
+            instance = self.get(public_id = public_id) #Calls a custom 'get' method (likely defined in the same class) to fetch a single object using its public_id (a unique identifier).
             return instance
         except(ObjectDoesNotExist, ValueError, TypeError):
             return Http404
@@ -57,11 +64,25 @@ class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
     bio = models.TextField(null=True)
     avatar = models.ImageField(null=True)
     
+    posts_liked = models.ManyToManyField("core_post.Post", # creates a many-to-many relationship where a user can like multiple posts, and each post can be liked by multiple users; .
+            related_name="liked_by") #the related_name="liked_by" allows reverse lookup from the Post model to see which users liked it (e.g., post.liked_by.all())
+    
     USERNAME_FIELD = 'email' #Tells Django to use email as the unique identifier for login instead of the default username. Only the email will be used for login — not the username.
     REQUIRED_FIELDS = ['username'] #Tells Django that username must be provided when creating a superuser via createsuperuser.
     
     
     objects = UserManager() #sets UserManager as the custom manager for your user model. UserManager is typically a subclass of BaseUserManager
+    
+    def like(self, post):
+        #Like post if it hasn't been done yet
+        return self.posts_liked.add(post) #add method from models is used to add the liked post to liked_posts
+    def remove_like(self, post):
+        return self.posts_liked.remove(post) #remove method is from models
+
+    def has_liked(self, post):                              #post in self.posts_liked loads the entire posts_liked queryset into memory.
+        return self.posts_liked.filter(pk=post.pk).exists() #Using .filter(...).exists() as It runs a single optimized database query to check if a like exists. It does not fetch all liked posts into memory.
+                                                            # there's no restriction that you must use only Django ORM in model methods — you can use regular Python logic freely. Django encourages ORM usage for interacting with the database, as it's optimized, secure, and integrates cleanly with Django features.
+                                                            #.exists() is not a model method, but a QuerySet method in Django ORM.
     
     def __str__(self):
         return f"{self.email}"
@@ -71,3 +92,7 @@ class User(AbstractModel, AbstractBaseUser, PermissionsMixin):
         return f"{self.first_name} {self.last_name}" #@property turns a method into a read-only attribute, letting you access it like a variable (e.g., user.name instead of user.name()
     
 
+""" Instead of adding fields such as likes_count in the Post model and generating more fields in 
+the database, we can directly manage it on PostSerializer. The Serializer class in Django 
+provides ways to create the write_only values that will be sent on the response.
+"""

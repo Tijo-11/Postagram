@@ -1,6 +1,7 @@
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from core.abstract.viewsets import AbstractViewSet
 from core.post.models import Post
@@ -34,54 +35,40 @@ class PostViewSet(AbstractViewSet):
     
 #URL Patterns Generated
 
-""""
-| **HTTP Method** | **URL Pattern** | **Action** | **ViewSet Method** | **Description**                     |
-| --------------- | --------------- | ---------- | ------------------ | ----------------------------------- |
-| `GET`           | `/post/`        | `list`     | `get_queryset()`   | List all posts                      |
-| `POST`          | `/post/`        | `create`   | `create()`         | Create a new post                   |
-| `GET`           | `/post/{pk}/`   | `retrieve` | `get_object()`     | Retrieve a single post by public ID |
-"""
+# 
+# | **HTTP Method** | **URL Pattern** | **Action** | **ViewSet Method** | **Description**                     |
+# | --------------- | --------------- | ---------- | ------------------ | ----------------------------------- |
+# | `GET`           | `/post/`        | `list`     | `get_queryset()`   | List all posts                      |
+# | `POST`          | `/post/`        | `create`   | `create()`         | Create a new post                   |
+# | `GET`           | `/post/{pk}/`   | `retrieve` | `get_object()`     | Retrieve a single post by public ID |
+
+#  DRF provides a decorator called action. This decorator helps make methods on a ViewSet class 
+# routable. The action decorator takes two arguments:
+#  • detail: If this argument is set to True, the route to this action will require a resource lookup 
+# field; in most cases, this will be the ID of the resource
+#  • methods: This is a list of the methods accepted by the action
+    @action(methods=['post'], detail= True) #this creates a POST endpoint for a specific object (detail=True means it acts on a single instance, not a list).
+    def like(self, request, *args, **kwargs): #handles a request to like a specific object, with arguments passed from the URL and router.
+        #*args and **kwargs are flexible arguments automatically passed by Django/DRF — kwargs often includes the object’s ID (e.g., pk).
+        post = self.get_object() #Retrieves the object (e.g., a Post) that this view is acting on, using the ID from the URL; provided by DRF's GenericViewSet or ModelViewSet.
+        #self.get_object() is a built-in DRF method It uses the lookup field (e.g., pk, slug, or public_id) from the URL to fetch the object from the database.
+        user = self.request.user() #request.user  Refers to the currently authenticated user making the request; available through Django’s authentication system.
+        
+        user.like(post) #calling a custom method named like() defined on the User model
+        serializer = self.serializer_class(post)  # Creates a serializer instance using the given post object to prepare it for JSON response (read-only by default).
+        return Response(serializer.data, status= status.HTTP_200_OK)
     
-    
-"""
-## ✅ Common ViewSet Methods and What They Do
-| Method                                   | What It Does                                                     |
-| ---------------------------------------- | ---------------------------------------------------------------- |
-| `create(self, request)`                  | Handles **POST** requests to create a new object.                |
-| `update(self, request, pk=None)`         | Handles **PUT** requests for full updates (all fields required). |
-| `partial_update(self, request, pk=None)` | Handles **PATCH** requests for partial updates.                  |
-| `list(self, request)`                    | Handles **GET** requests to list all objects.                    |
-| `retrieve(self, request, pk=None)`       | Handles **GET /posts/{id}/** to retrieve one object.             |
-| `destroy(self, request, pk=None)`        | Handles **DELETE /posts/{id}/** to delete an object.             |
-| `get_queryset(self)`                     | Tells DRF which queryset to use.                                 |
-| `get_object(self)`                       | Tells DRF how to retrieve a single object.                       |
-| `perform_create(self, serializer)`       | Optional hook: customize saving during create.                   |
-| `perform_update(self, serializer)`       | Optional hook: customize saving during update.                   |
-
-
-> If you don’t define some of these, DRF will use default behavior — but you can override them to customize.
-
-A **ViewSet** is like a toolbox of actions related to one type of object — for example, *posts*.
-
-Instead of writing a different view (function or class) for every action like *create a post*, *edit a post*, *get a post*, etc., you put all of those into one ViewSet. It helps you organize your code and saves you from repeating things.
-
-### 2. **What is a Router?**
-
-In Django, **URLs** determine what gets called when someone visits a specific path — like `/post/` or `/post/1/`.
-
-In DRF, you use a **router** to automatically create all those URL patterns for a ViewSet. You register your ViewSet like this:
-
-
-router.register(r'post', PostViewSet, basename='post')
-
-
-That tells Django:
-
-> "Please create all necessary URLs for managing posts using the methods in `PostViewSet`."
-**Summary: What’s Happening Overall**
-
-* You write a `PostViewSet` class with all the logic for handling posts.
-* You register it with a router using `router.register()`.
-* The router creates all the needed URLs and maps them to the methods in your ViewSet.
-* When someone visits `/post/` or `/post/123/`, Django knows exactly what method to run (`create`, `update`, etc.).
-"""
+    @action(methods=['post'], detail=True)
+    def remove_like(self, request, *args, **kwargs):
+        post= self.get_object()
+        user = self.request.user()
+        user.remove_like(post)
+        serializer = self.serializer_class(post)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+# The self.get_object() method will automatically return the concerned post using the 
+# ID passed to the URL request, thanks to the detail attribute being set to True.
+#  we also retrieve the user making the request from the self.request object. This 
+# is done so that we can call the remove_like or like method added to the User model.
+#Like a post with the following endpoint: api/post/post_pk/like/.
+#Remove the like from a post with the following endpoint: api/post/post_pk/remove_like/
+        

@@ -20,3 +20,48 @@ class UserViewSet(AbstractViewSet): # viewsets.ModelViewSet is a Django REST Fra
         self.check_object_permissions(self.request, obj)  #checks if the current user (self.request.user) has permission to access the given object (obj) — raises a 403 error if not allowed.
         return obj
     
+    
+
+"""
+## ✅ Common ViewSet Methods and What They Do
+| Method                                   | What It Does                                                     |
+| ---------------------------------------- | ---------------------------------------------------------------- |
+| `create(self, request)`                  | Handles **POST** requests to create a new object.                |
+| `update(self, request, pk=None)`         | Handles **PUT** requests for full updates (all fields required). |
+| `partial_update(self, request, pk=None)` | Handles **PATCH** requests for partial updates.                  |
+| `list(self, request)`                    | Handles **GET** requests to list all objects.                    |
+| `retrieve(self, request, pk=None)`       | Handles **GET /posts/{id}/** to retrieve one object.             |
+| `destroy(self, request, pk=None)`        | Handles **DELETE /posts/{id}/** to delete an object.             |
+| `get_queryset(self)`                     | Tells DRF which queryset to use.                                 |
+| `get_object(self)`                       | Tells DRF how to retrieve a single object.                       |
+| `perform_create(self, serializer)`       | Optional hook: customize saving during create.                   |
+| `perform_update(self, serializer)`       | Optional hook: customize saving during update.                   |
+
+
+> If you don’t define some of these, DRF will use default behavior — but you can override them to customize.
+
+A **ViewSet** is like a toolbox of actions related to one type of object — for example, *posts*.
+
+Instead of writing a different view (function or class) for every action like *create a post*, *edit a post*, *get a post*, etc., you put all of those into one ViewSet. It helps you organize your code and saves you from repeating things.
+
+### 2. **What is a Router?**
+
+In Django, **URLs** determine what gets called when someone visits a specific path — like `/post/` or `/post/1/`.
+
+In DRF, you use a **router** to automatically create all those URL patterns for a ViewSet. You register your ViewSet like this:
+
+
+router.register(r'post', PostViewSet, basename='post')
+
+
+That tells Django:
+
+> "Please create all necessary URLs for managing posts using the methods in `PostViewSet`."
+**Summary: What’s Happening Overall**
+
+* You write a `PostViewSet` class with all the logic for handling posts.
+* You register it with a router using `router.register()`.
+* The router creates all the needed URLs and maps them to the methods in your ViewSet.
+* When someone visits `/post/` or `/post/123/`, Django knows exactly what method to run (`create`, `update`, etc.).
+"""
+    

@@ -23,6 +23,6 @@ class LoginViewSet(ViewSet):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)   
     
     
-"""If authentication is the action of verifying the identity of a user, authorization is simply the action of 
+"""authentication is the action of verifying the identity of a user, authorization is simply the action of 
 checking whether the user has the rights or privileges to perform an action."""
     
