@@ -22,3 +22,7 @@ class LoginViewSet(ViewSet):
             raise InvalidToken(e.args[0]) #raises an InvalidToken exception using the first argument from a caught error e, passing along the error message to explain why the token is invalid.
         return Response(serializer.validated_data, status=status.HTTP_200_OK)   
     
+    
+"""If authentication is the action of verifying the identity of a user, authorization is simply the action of 
+checking whether the user has the rights or privileges to perform an action."""
+    
