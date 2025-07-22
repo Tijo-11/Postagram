@@ -47,15 +47,22 @@ class PostViewSet(AbstractViewSet):
 #  • detail: If this argument is set to True, the route to this action will require a resource lookup 
 # field; in most cases, this will be the ID of the resource
 #  • methods: This is a list of the methods accepted by the action
-    @action(methods=['post'], detail= True) #this creates a POST endpoint for a specific object (detail=True means it acts on a single instance, not a list).
-    def like(self, request, *args, **kwargs): #handles a request to like a specific object, with arguments passed from the URL and router.
-        #*args and **kwargs are flexible arguments automatically passed by Django/DRF — kwargs often includes the object’s ID (e.g., pk).
-        post = self.get_object() #Retrieves the object (e.g., a Post) that this view is acting on, using the ID from the URL; provided by DRF's GenericViewSet or ModelViewSet.
-        #self.get_object() is a built-in DRF method It uses the lookup field (e.g., pk, slug, or public_id) from the URL to fetch the object from the database.
-        user = self.request.user() #request.user  Refers to the currently authenticated user making the request; available through Django’s authentication system.
+    @action(methods=['post'], detail= True) #this creates a POST endpoint for a specific object (detail=True 
+    #means it acts on a single instance, not a list).
+    def like(self, request, *args, **kwargs): #handles a request to like a specific object, with arguments passed
+        #from the URL and router.
+        #*args and **kwargs are flexible arguments automatically passed by Django/DRF — kwargs often includes the 
+        # object’s ID (e.g., pk).
+        post = self.get_object() #Retrieves the object (e.g., a Post) that this view is acting on, using the ID 
+        #from the URL; provided by DRF's GenericViewSet or ModelViewSet.
+        #self.get_object() is a built-in DRF method It uses the lookup field (e.g., pk, slug, or public_id) from
+        # the URL to fetch the object from the database.
+        user = self.request.user() #request.user  Refers to the currently authenticated user making the request;
+        #available through Django’s authentication system.
         
         user.like(post) #calling a custom method named like() defined on the User model
-        serializer = self.serializer_class(post)  # Creates a serializer instance using the given post object to prepare it for JSON response (read-only by default).
+        serializer = self.serializer_class(post)  # Creates a serializer instance using the given post object to 
+        #prepare it for JSON response (read-only by default).
         return Response(serializer.data, status= status.HTTP_200_OK)
     
     @action(methods=['post'], detail=True)
