@@ -37,7 +37,8 @@ class RegisterViewSet(ViewSet):
         }
         return Response({
             "user":serializer.data, #This includes the serialized user data (like username, email, etc.) in 
-            #the API response — it's the newly created or logged-in user's details, structured as JSON.password will not appear in the serialized response (serializer.data), because it's write-only.
+            #the API response — it's the newly created or logged-in user's details, structured as JSON.password
+            # will not appear in the serialized response (serializer.data), because it's write-only.
             "refresh":res["refresh"],
             "access": res["access"],
         }, status= status.HTTP_201_CREATED)
