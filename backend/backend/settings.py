@@ -126,7 +126,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK= {
     'DEFAULT_AUTHENTICATION_CLASSES':(
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),#This sets JWT (JSON Web Token) authentication as the default method for Django REST Framework — meaning all API requests must include a valid JWT token (usually in the Authorization header) to authenticate the user.
     'DEFAULT_FILTER_BACKENDS':['django_filters.rest_framework.DjangoFilterBackend'],# using the django-filter library — allows clients to filter query results via URL parameters (e.g., /users/?is_active=True)
     'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.LimitOffsetPagination', #This sets the default pagination style to LimitOffsetPagination, allowing clients to control how many results are returned (limit) and where to start (offset).

@@ -7,7 +7,7 @@ from core.user.models import User
 
 class UserViewSet(AbstractViewSet): # viewsets.ModelViewSet is a Django REST Framework class that provides default CRUD operations (list, create, retrieve, update, delete) for a model — all in one place.
     http_method_names = ('patch', 'get') #This restricts the viewset to accept only GET (read) and PATCH (partial update) HTTP methods — blocking others like POST, PUT, DELETE.
-    permission_classes = (IsAuthenticated) #This allows any user, authenticated or not, to access the view — no permission checks are enforced.
+    permission_classes = (IsAuthenticated,) #This allows any user, authenticated or not, to access the view — no permission checks are enforced.
     serializer_class = UserSerializer
     
     def get_queryset(self):
